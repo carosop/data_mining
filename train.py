@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
-import joblib  # Import joblib for model saving
+import joblib  
 
 # Load the training dataset
 train_data = pd.read_csv('train_data.csv', delimiter=';')
@@ -20,7 +20,7 @@ for i in range(10):
         action_mapping[f'hotkey{i}{j}'] = 3 + i * 3 + j
 
 # Convert action sequences to numerical values
-#if t it converts it to 100 
+#if tXX it converts it to 100 otherwise -1
 for i in range(1, 2564):
     train_data[f'Move_{i}'] = train_data[f'Move_{i}'].map(lambda x: 100 if pd.notna(x) and isinstance(x, str) and x.startswith('t') else action_mapping.get(x, -1))
 
@@ -43,14 +43,14 @@ for _, row in train_data.iterrows():
     count_100 = 1
 
     # Iterate through each 'Move_XX' column for the current row
-    for col in train_data.columns[3:]:  # Assuming your 'Move_XX' columns start from index 3
+    for col in train_data.columns[3:]: 
         # Check if the value is different from -1
         if row[col] != -1:
             action_count_before_time += 1
 
             # Check if the value is 100
             if row[col] == 100:
-                timestamp = count_100 * 5  # Use count_100 to calculate the timestamp
+                timestamp = count_100 * 5 
                 counts_before_100[f't{timestamp}'] = action_count_before_time
                 action_count_before_time = -1 
                 count_100 += 1
@@ -59,21 +59,18 @@ for _, row in train_data.iterrows():
     if not action_count_before_time:
         action_count_before_time = 0
 
-    # Append the dictionary of counts for the current row to the main list
+    # Append the counts for the current row to the list
     row_action_counts.append(counts_before_100)
 
-# Create a DataFrame from the results
+# Create a csv from the results
 result_df = pd.DataFrame(row_action_counts)
 
-# Add the 'PlayerID' column
+# Add the 'PlayerID' and 'Race' column
 result_df.insert(0, 'PlayerID', train_data['PlayerID'])
 result_df.insert(1, 'Race', train_data['Race'])
 
 # Save the DataFrame to a CSV file
 result_df.to_csv('move_count.csv', index=False)
-
-# print("Move counts per player saved to 'move_count.csv'")
-
 
 # # Print the results for each row
 # for i, counts in enumerate(row_action_counts):
