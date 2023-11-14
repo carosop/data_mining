@@ -2,6 +2,9 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 import joblib  
 
+###################################################
+# preprocessing
+###################################################
 # Load the training dataset
 train_data = pd.read_csv('train_data.csv', delimiter=';')
 train_data.columns = ['PlayerURL', 'PlayerID', 'PlayerName', 'Race'] + [f'Move_{i}' for i in range(1, 2564)]
@@ -29,6 +32,9 @@ for i in range(1, 2564):
 print(train_data)
 
 
+########################################################
+# counting of how many actions before each time slot t
+########################################################
 # Create an empty list to store counts for each row
 row_action_counts = []
 
