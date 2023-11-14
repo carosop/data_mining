@@ -85,3 +85,6 @@ for i in range(10):
 train_data_new['sCounts'] = counts[10]
 train_data_new['baseCounts'] = counts[11]
 train_data_new['singleMineralCounts'] = counts[12]
+
+
+print(train_data_new)
