@@ -29,15 +29,19 @@ for i in range(1, 2564):
 
 
 # Count how many types of races each player plays
-race_counts = train_data.groupby('PlayerID')['Race'].nunique().reset_index()
-race_counts.columns = ['PlayerID', 'NumRaces']
+race_counts = train_data.groupby('PlayerID')['Race'].nunique().reset_index(name='NumRaces')
+# Count how many times each player plays each race
+race_occurrences = train_data.groupby(['PlayerID', 'Race']).size().reset_index(name='NumOccurrences')
 
-print(race_counts)
-
-#train_data.insert(1,'NumRaces', race_counts['NumRaces'])
+# Merge the two DataFrames on 'PlayerID'
+merge = pd.merge(race_counts, race_occurrences, on='PlayerID', how='left')
 
 # Save the result to a CSV file
-race_counts.to_csv('race_count_per_player.csv', index=False)
+merge.to_csv('race_count_per_player.csv', index=False)
+
+print(merge)
+
+#train_data.insert(1,'NumRaces', race_counts['NumRaces'])
 
 train_data.to_csv('mapped_train_data.csv', index=False)
 
