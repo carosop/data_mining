@@ -27,7 +27,20 @@ for i in range(10):
 for i in range(1, 2564):
     train_data[f'Move_{i}'] = train_data[f'Move_{i}'].map(lambda x: 100 if pd.notna(x) and isinstance(x, str) and x.startswith('t') else action_mapping.get(x, -1))
 
-#train_data.to_csv('mapped_train_data.csv', index=False)
+
+# Count how many types of races each player plays
+race_counts = train_data.groupby('PlayerID')['Race'].nunique().reset_index()
+race_counts.columns = ['PlayerID', 'NumRaces']
+
+print(race_counts)
+
+#train_data.insert(1,'NumRaces', race_counts['NumRaces'])
+
+# Save the result to a CSV file
+race_counts.to_csv('race_count_per_player.csv', index=False)
+
+train_data.to_csv('mapped_train_data.csv', index=False)
+
 
 print(train_data)
 
