@@ -30,7 +30,7 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
         move = row["Move "+ str(i)]
         
         if move == f't{time_interval}':
-            return;
+            return
         
         else:
             # Count actions for the given time interval
@@ -96,13 +96,13 @@ print(train_data_new)
 
 
 # Assuming 'PlayerId' is the column containing player IDs in your dataset
-labels = train_data_new['PlayerId']
+target = train_data_new['PlayerID']
 
 # Drop unnecessary columns (PlayerId and Race) to keep only the counts as features
-features = train_data_new.drop(['PlayerId', 'Race'], axis=1)
+features = train_data_new.drop(['PlayerID', 'Race'], axis=1)
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2, random_state=42)
 
 # Choose a model (e.g., Decision Tree) and train it
 model = DecisionTreeClassifier(random_state=42)
