@@ -130,8 +130,11 @@ print(player_id_column)
 # Merge the predicted ID to get the url of the player
 result = pd.merge(player_id_column, player_info, left_on='Predicted_PlayerID', right_on='PlayerID', how='left')
 
-result = result.drop(['Predicted_PlayerID', 'PlayerID'], axis=1)
-result.insert(0,"Row_Id", range(1, len(result) + 1))
+#result = result.drop(['Predicted_PlayerID', 'PlayerID'], axis=1)
+result = result.drop(['Predicted_PlayerID'], axis=1)
+#result.insert(0,"Row_Id", range(1, len(result) + 1))
+
+
 
 print(result)
 
