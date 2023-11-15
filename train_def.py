@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_predict, cross_val_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score
+import joblib 
 
 def count_moves(row, counts, index):
     for i in range(1, 2564):
@@ -108,6 +109,9 @@ X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.
 # Choose a model (e.g., Decision Tree) and train it
 model = DecisionTreeClassifier(random_state=42)
 model.fit(X_train, y_train)
+
+# Save the trained model to a file
+joblib.dump(model, 'player_id_prediction_model.pkl')
 
 # Make predictions on the val set
 predictions = model.predict(X_val)
