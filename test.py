@@ -132,8 +132,8 @@ result = pd.merge(player_id_column, player_info, left_on='Predicted_PlayerID', r
 
 result = result.drop(['Predicted_PlayerID', 'PlayerID'], axis=1)
 #result = result.drop(['Predicted_PlayerID'], axis=1)
-result.insert(0,"RowId", range(1, len(result) + 1))
-
+result.insert(0,"RowId")
+# result.insert(0,"RowId", range(1, len(result) + 1))
 
 
 print(result)
