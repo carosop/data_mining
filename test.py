@@ -1,4 +1,7 @@
 import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+import joblib 
+
 def count_moves(row, counts, index):
     for i in range(1, 3446):
         move = row["Move_"+ str(i)]
@@ -42,7 +45,6 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
                 for j in range(10):
                     if move.startswith(f"hotkey{j}_t{time_interval}"):
                         counts[base_index+j][row_index] += 1
-
 
 
 test_data = pd.read_csv('test_data.csv', delimiter=';')
@@ -90,45 +92,47 @@ test_data_new.to_csv('actiontype_count_test.csv', index=False)
 print(test_data_new)
 
 
+# Load the pre-trained model
+model_filename = 'player_id_prediction_model.pkl'
+clf = joblib.load(model_filename)
+
+features = test_data_new.drop(['Race'], axis=1)
 
 
+# Use the loaded model to make predictions
+predictions = clf.predict(features)
+
+# Add predictions to the test_data_new DataFrame
+test_data_new['Predicted_PlayerID'] = predictions
+
+print(test_data_new)
 
 
+# Load the training dataset
+train_data = pd.read_csv('train_data.csv', delimiter=';')
+
+# Extract 'PlayerID' and 'PlayerURL' columns
+player = train_data[['PlayerID', 'PlayerURL']]
+
+player_info = player.drop_duplicates(subset='PlayerID', keep='first')
+
+print(player_info)
+
+# Save the result to CSV
+player_info.to_csv('player_info.csv', index=False)
 
 
+# Extract 'PlayerID' column
+player_id_column = test_data_new[['Predicted_PlayerID']]
 
-# model_filename = 'player_id_prediction_model.pkl'
-# clf = joblib.load(model_filename)
+print(player_id_column)
 
-# # Load and preprocess the data to be predicted
-# test_data = pd.read_csv('test_data.csv', delimiter=';')
-# test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
+# Merge the predicted ID to get the url of the player
+result = pd.merge(player_id_column, player_info, left_on='Predicted_PlayerID', right_on='PlayerID', how='left')
 
-# print(test_data)
-# # Map the 'Race' column to numeric values
-# race_mapping = {'Protoss': 0, 'Zerg': 1, 'Terran': 2}
-# test_data['Race'] = test_data['Race'].map(race_mapping)
+result = result.drop(['Predicted_PlayerID', 'PlayerID'], axis=1)
 
-# # Define action mapping with a default value of -1 for unrecognized actions
-# action_mapping = {'s': 0, 'Base': 1, 'SingleMineral': 2}
-# for i in range(10):
-#     for j in range(3):
-#         action_mapping[f'hotkey{i}{j}'] = 3 + i * 3 + j
+print(result)
 
-# def map_action(action):
-#     return action_mapping.get(action, -1)
-
-# # Convert action sequences to numerical values 
-# for i in range(1, 3446):
-#     test_data[f'Move_{i}'] = test_data[f'Move_{i}'].map(map_action)
-
-# print(test_data)
-
-# # Define features (X) and target (y)
-# features = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
-
-# # Use the loaded model to make predictions
-# predictions = clf.predict(test_data[features])
-
-# print("Predicted Player IDs:")
-# print(predictions)
+# Save 'PlayerURL' to CSV
+result.to_csv('player_id_only.csv', index=False)
