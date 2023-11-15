@@ -95,8 +95,6 @@ train_data_new.to_csv('actiontype_count.csv', index=False)
 print(train_data_new)
 
 
-
-
 # Assuming 'PlayerId' is the column containing player IDs in your dataset
 labels = train_data_new['PlayerID']
 
