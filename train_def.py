@@ -21,29 +21,32 @@ def count_moves(row, counts, index):
 
 
 def count_move_per_time(row, counts, index, time_interval):
-    found_time_interval = False
-
+    found_time_interval = True
+    y = 1
     for i in range(1, 2564):
+        base_index = y*13
         move = row["Move "+ str(i)]
-
+        
         if found_time_interval:
-            # Count actions for the given time interval
-            if move == 's':
-                counts[10][index] += 1
-            elif move == 'Base':
-                counts[11][index] += 1
-            elif move == 'SingleMineral':
-                counts[12][index] += 1
+                # Count actions for the given time interval
+                if move == 's':
+                    counts[base_index+10][index] += 1
+                elif move == 'Base':
+                    counts[base_index+11][index] += 1
+                elif move == 'SingleMineral':
+                    counts[base_index+12][index] += 1
 
-            # Count hotkeys for the given time interval
-            elif isinstance(move, str):
-                for j in range(10):
-                    if move.startswith(f"hotkey{j}_t{time_interval}"):
-                        counts[j][index] += 1
+                # Count hotkeys for the given time interval
+                elif isinstance(move, str):
+                    for j in range(10):
+                        if move.startswith(f"hotkey{j}_t{time_interval}"):
+                            counts[base_index+j][index] += 1
 
         # Check if the current action is the target time interval
         elif move == f't{time_interval}':
-            found_time_interval = True
+            found_time_interval = False
+            y += 1
+
 
 # Load the training dataset
 train_data = pd.read_csv('train_data.csv', delimiter=';')
@@ -67,7 +70,7 @@ time_intervals = [20, 60, 100, 200]
 for index, row in train_data.iterrows():
     count_moves(row, counts, index)
 
-    for i, time_interval in enumerate(time_intervals):
+    for time_interval in time_intervals:
         count_move_per_time(row, counts, index, time_interval)
 
 
