@@ -1,6 +1,7 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_predict, cross_val_score
 from sklearn.tree import DecisionTreeClassifier
+from sklearn import metrics
 from sklearn.metrics import accuracy_score
 
 def count_moves(row, counts, index):
@@ -103,15 +104,20 @@ labels = train_data_new['PlayerId']
 features = train_data_new.drop(['PlayerId', 'Race'], axis=1)
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.2, random_state=42)
 
 # Choose a model (e.g., Decision Tree) and train it
-model = DecisionTreeClassifier(random_state=42)
+model = DecisionTreeClassifier(random_state=42).fit(labels,features)
 model.fit(X_train, y_train)
 
-# Make predictions on the test set
-predictions = model.predict(X_test)
+# Make predictions on the val set
+predictions = model.predict(X_val)
+
+print(metrics.f1_score(y_val,predictions,average='micro'))
+
+scores = cross_val_score(model, features, labels, cv=3)
+print(scores)
 
 # Evaluate the model
-accuracy = accuracy_score(y_test, predictions)
+accuracy = accuracy_score(y_val, predictions)
 print(f"Accuracy: {accuracy}")
