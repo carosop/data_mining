@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 import joblib 
 
+
+#same preprocessing as in train_def so that we have save structured data
 def count_moves(row, counts, index):
     for i in range(1, 3446):
         move = row["Move_"+ str(i)]
@@ -46,16 +48,14 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
                     if move.startswith(f"hotkey{j}_t{time_interval}"):
                         counts[base_index+j][row_index] += 1
 
-
+# load new data file 
 test_data = pd.read_csv('test_data.csv', delimiter=';')
 test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
 
 
 # Create new table that only contains the first two columns (PlayerId and Race) of train_data
-# Keep only the first two columns but all rows
+# Keep only the first column but all rows
 test_data_new = test_data.iloc[:, :1]
-
-# add the count of Moves per row
 
 # new lists of counts
 counts = [[0] * 340 for _ in range(65)]
@@ -70,7 +70,7 @@ for row_index, row in test_data.iterrows():
     for ti_index, time_interval in enumerate(time_intervals):
         count_move_per_time(row, counts, row_index, time_interval, ti_index+1)
 
-
+# adding all thr nre colums to the test_data_new
 for i in range(10):
     test_data_new[f'hk{i}Counts'] = counts[i]
     
@@ -87,6 +87,7 @@ for ti_index, time_interval in enumerate(time_intervals):
     test_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
     test_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
 
+# saving thhem in a csv file
 test_data_new.to_csv('actiontype_count_test.csv', index=False)
 
 print(test_data_new)
@@ -114,6 +115,7 @@ train_data = pd.read_csv('train_data.csv', delimiter=';')
 # Extract 'PlayerID' and 'PlayerURL' columns
 player = train_data[['PlayerID', 'PlayerURL']]
 
+# take only one URL per each PlayerID
 player_info = player.drop_duplicates(subset='PlayerID', keep='first')
 
 print(player_info)
@@ -122,7 +124,7 @@ print(player_info)
 player_info.to_csv('player_info.csv', index=False)
 
 
-# Extract 'PlayerID' column
+# Extract 'Predicted_PlayerID' column
 player_id_column = test_data_new[['Predicted_PlayerID']]
 
 print(player_id_column)
@@ -130,11 +132,10 @@ print(player_id_column)
 # Merge the predicted ID to get the url of the player
 result = pd.merge(player_id_column, player_info, left_on='Predicted_PlayerID', right_on='PlayerID', how='left')
 
+# take only the url for each player
 result = result.drop(['Predicted_PlayerID', 'PlayerID'], axis=1)
-#result = result.drop(['Predicted_PlayerID'], axis=1)
-#result.insert(0,"RowId","")
+# insert a new row in position 0 as asked for the submission and count the number of lines
 result.insert(0,"RowId", range(1, len(result) + 1))
-
 
 print(result)
 
