@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_predict, cross_val_score
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
 import joblib 
 
@@ -51,7 +52,7 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
 
 def mapRaces(races, row_index):
     race = train_data['Race'][row_index]
-    
+
     if race == "Protoss":
         races[0][row_index] = 1
     elif race == "Terran":
@@ -129,7 +130,9 @@ features = train_data_new.drop(['PlayerID'], axis=1)
 X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.2, random_state=42)
 
 # Choose a model (e.g., Decision Tree) and train it
-model = DecisionTreeClassifier(random_state=42)
+#model = DecisionTreeClassifier(random_state=42)
+
+model = RandomForestClassifier(random_state=42, n_estimators=100)
 model.fit(X_train, y_train)
 
 # Trained model to a file saving

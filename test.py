@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
 import joblib 
 
 
@@ -69,10 +69,6 @@ test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
 # Keep only the first column but all rows
 test_data_new = test_data.iloc[:, :1]
 
-# Add columns for the count of moves per row
-# Add columns for the count of moves per time interval
-# Add columns for the races
-
 # New lists of counts
 counts = [[0] * 340 for _ in range(65)]
 # New lists of races
@@ -116,7 +112,7 @@ test_data_new['race_Zerg'] = races[2]
 # Saving thhem in a csv file
 test_data_new.to_csv('actiontype_count_test.csv', index=False)
 
-print(test_data_new)
+# print(test_data_new)
 
 
 # Load the pre-trained model
@@ -132,7 +128,7 @@ predictions = clf.predict(features)
 # Add predictions to the test_data_new DataFrame
 test_data_new['Predicted_PlayerID'] = predictions
 
-print(test_data_new)
+# print(test_data_new)
 
 
 # Load the training dataset
@@ -149,6 +145,11 @@ print(player_info)
 # Save the result to CSV
 player_info.to_csv('player_info.csv', index=False)
 
+
+# Additional statistics if needed
+# For example, you can print the count of each predicted class
+print("Count of Predicted PlayerIDs:")
+print(test_data_new['Predicted_PlayerID'].value_counts())
 
 # Extract 'Predicted_PlayerID' column
 player_id_column = test_data_new[['Predicted_PlayerID']]
@@ -167,3 +168,8 @@ print(result)
 
 # Save 'PlayerURL' to CSV
 result.to_csv('player_id_only.csv', index=False)
+
+
+# Print additional statistics or analysis if needed
+print("Count of Unique PlayerURLs:")
+print(result['PlayerURL'].nunique())
