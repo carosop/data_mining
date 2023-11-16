@@ -48,7 +48,20 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
                     if move.startswith(f"hotkey{j}_t{time_interval}"):
                         counts[base_index+j][row_index] += 1
 
-# load new data file 
+
+def mapRaces(races, row_index):
+    race = test_data['Race'][row_index]
+
+    match race:
+        case "Protoss":
+            races[0][row_index] = 1
+        case "Terran":
+            races[1][row_index] = 1
+        case "Zerg":
+            races[2][row_index] = 1
+
+
+# Load new data file 
 test_data = pd.read_csv('test_data.csv', delimiter=';')
 test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
 
@@ -57,7 +70,11 @@ test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
 # Keep only the first column but all rows
 test_data_new = test_data.iloc[:, :1]
 
-# new lists of counts
+# Add columns for the count of moves per row
+# Add columns for the count of moves per time interval
+# Add columns for the races
+
+# New lists of counts
 counts = [[0] * 340 for _ in range(65)]
 # New lists of races
 races = [[0] * 340 for _ in range(3)]
@@ -65,14 +82,16 @@ races = [[0] * 340 for _ in range(3)]
 # Specify the target time intervals
 time_intervals = [20, 60, 100, 200]
 
-# go through the rows
+# Go through the rows using the functions to count the actions, map the races
 for row_index, row in test_data.iterrows():
     count_moves(row, counts, row_index)
+    mapRaces(races, row_index)
 
     for ti_index, time_interval in enumerate(time_intervals):
         count_move_per_time(row, counts, row_index, time_interval, ti_index+1)
 
-# adding all thr nre colums to the test_data_new
+# Adding all the new columns to the train_data_new
+# Adding new columns for the count of moves
 for i in range(10):
     test_data_new[f'hk{i}Counts'] = counts[i]
     
@@ -80,6 +99,7 @@ test_data_new['sCounts'] = counts[10]
 test_data_new['baseCounts'] = counts[11]
 test_data_new['singleMineralCounts'] = counts[12]
 
+# Adding new columns for the count of moves per interval
 for ti_index, time_interval in enumerate(time_intervals):
     base_index = (ti_index+1)*13
     for j in range(10):
@@ -89,7 +109,12 @@ for ti_index, time_interval in enumerate(time_intervals):
     test_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
     test_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
 
-# saving thhem in a csv file
+# Adding new columns for the races
+test_data_new['race_Protoss'] = races[0]
+test_data_new['race_Terran'] = races[1]
+test_data_new['race_Zerg'] = races[2]
+
+# Saving thhem in a csv file
 test_data_new.to_csv('actiontype_count_test.csv', index=False)
 
 print(test_data_new)
