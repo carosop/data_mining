@@ -52,13 +52,12 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
 def mapRaces(races, row_index):
     race = test_data['Race'][row_index]
 
-    match race:
-        case "Protoss":
-            races[0][row_index] = 1
-        case "Terran":
-            races[1][row_index] = 1
-        case "Zerg":
-            races[2][row_index] = 1
+    if race == "Protoss":
+        races[0][row_index] = 1
+    elif race == "Terran":
+        races[1][row_index] = 1
+    elif race == "Zerg":
+        races[2][row_index] = 1
 
 
 # Load new data file 
