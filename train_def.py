@@ -48,33 +48,50 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
                     if move.startswith(f"hotkey{j}_t{time_interval}"):
                         counts[base_index+j][row_index] += 1
 
+
+def mapRaces(races, row_index):
+    race = train_data['Race'][row_index]
+
+    match race:
+        case "Protoss":
+            races[0][row_index] = 1
+        case "Terran":
+            races[1][row_index] = 1
+        case "Zerg":
+            races[2][row_index] = 1
+
 # Load the training dataset
 train_data = pd.read_csv('train_data.csv', delimiter=';')
 
 # Drop unnecessary columns
 train_data = train_data.drop(['PlayerURL', 'PlayerName'], axis=1)
 
-# Create new table that only contains the first two columns (PlayerId and Race) of train_data
-# Keep only the first two columns but all rows
-train_data_new = train_data.iloc[:, :2]
+# Create new table that only contains the first column (PlayerId) of train_data
+# Keep only the first column but all rows
+train_data_new = train_data.iloc[:, :1]
 
-# add the count of Moves per row
+# Add columns for the count of moves per row
+# Add columns for the count of moves per time interval
+# Add columns for the races
 
-# new lists of counts
+# New lists of counts
 counts = [[0] * 3052 for _ in range(65)]
+# New lists of races
+races = [[0] * 3052 for _ in range(3)]
 
 # Specify the target time intervals
 time_intervals = [20, 60, 100, 200]
 
-# go through the rows using the functions to count the actions 
+# Go through the rows using the functions to count the actions, map the races
 for row_index, row in train_data.iterrows():
     count_moves(row, counts, row_index)
+    mapRaces(races, row_index)
 
     for ti_index, time_interval in enumerate(time_intervals):
         count_move_per_time(row, counts, row_index, time_interval, ti_index+1)
-
-
-# adding all thr nre colums to the train_data_new
+        
+# Adding all the new columns to the train_data_new
+# Adding new columns for the count of moves
 for i in range(10):
     train_data_new[f'hk{i}Counts'] = counts[i]
     
@@ -82,6 +99,7 @@ train_data_new['sCounts'] = counts[10]
 train_data_new['baseCounts'] = counts[11]
 train_data_new['singleMineralCounts'] = counts[12]
 
+# Adding new columns for the count of moves per interval
 for ti_index, time_interval in enumerate(time_intervals):
     base_index = (ti_index+1)*13
     for j in range(10):
@@ -91,17 +109,22 @@ for ti_index, time_interval in enumerate(time_intervals):
     train_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
     train_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
 
-# saving thhem in a csv file
+# Adding new columns for the races
+train_data_new['race_Protoss'] = races[0]
+train_data_new['race_Terran'] = races[1]
+train_data_new['race_Zerg'] = races[2]
+
+# Saving them in a csv file
 train_data_new.to_csv('actiontype_count.csv', index=False)
 
 print(train_data_new)
 
 
-# target
+# Target
 labels = train_data_new['PlayerID']
 
-# keep only the colums we need as features
-features = train_data_new.drop(['PlayerID', 'Race'], axis=1)
+# Keep only the colums we need as features
+features = train_data_new.drop(['PlayerID'], axis=1)
 
 # Split the data into training and testing sets
 X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.2, random_state=42)
@@ -110,10 +133,10 @@ X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.
 model = DecisionTreeClassifier(random_state=42)
 model.fit(X_train, y_train)
 
-# trained model to a file saving
+# Trained model to a file saving
 joblib.dump(model, 'player_id_prediction_model.pkl')
 
-# predictions on the val set
+# Predictions on the val set
 predictions = model.predict(X_val)
 
 print(f1_score(y_val,predictions,average='micro'))
@@ -123,4 +146,4 @@ print(scores)
 
 # Evaluation of model
 accuracy = accuracy_score(y_val, predictions)
-print(f"Accuracy: {accuracy}")
+print(f'Accuracy: {accuracy}')

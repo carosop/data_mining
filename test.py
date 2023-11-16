@@ -53,12 +53,14 @@ test_data = pd.read_csv('test_data.csv', delimiter=';')
 test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
 
 
-# Create new table that only contains the first two columns (PlayerId and Race) of train_data
+# Create new table that only contains the first column (Race) of train_data
 # Keep only the first column but all rows
 test_data_new = test_data.iloc[:, :1]
 
 # new lists of counts
 counts = [[0] * 340 for _ in range(65)]
+# New lists of races
+races = [[0] * 340 for _ in range(3)]
 
 # Specify the target time intervals
 time_intervals = [20, 60, 100, 200]
