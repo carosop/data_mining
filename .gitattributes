@@ -1,3 +1,4 @@
 /Users/carolina/Downloads/test_data.csv filter=lfs diff=lfs merge=lfs -text
 /Users/carolina/Downloads/train_data.csv filter=lfs diff=lfs merge=lfs -text
 player_id_prediction_model.pkl filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
