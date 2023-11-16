@@ -66,7 +66,7 @@ counts = [[0] * 3052 for _ in range(65)]
 # Specify the target time intervals
 time_intervals = [20, 60, 100, 200]
 
-# go through the rows
+# go through the rows using the functions to count the actions 
 for row_index, row in train_data.iterrows():
     count_moves(row, counts, row_index)
 
@@ -74,6 +74,7 @@ for row_index, row in train_data.iterrows():
         count_move_per_time(row, counts, row_index, time_interval, ti_index+1)
 
 
+# adding all thr nre colums to the train_data_new
 for i in range(10):
     train_data_new[f'hk{i}Counts'] = counts[i]
     
@@ -90,15 +91,16 @@ for ti_index, time_interval in enumerate(time_intervals):
     train_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
     train_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
 
+# saving thhem in a csv file
 train_data_new.to_csv('actiontype_count.csv', index=False)
 
 print(train_data_new)
 
 
-# Assuming 'PlayerId' is the column containing player IDs in your dataset
+# target
 labels = train_data_new['PlayerID']
 
-# Drop unnecessary columns (PlayerId and Race) to keep only the counts as features
+# keep only the colums we need as features
 features = train_data_new.drop(['PlayerID', 'Race'], axis=1)
 
 # Split the data into training and testing sets
@@ -108,10 +110,10 @@ X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.
 model = DecisionTreeClassifier(random_state=42)
 model.fit(X_train, y_train)
 
-# Save the trained model to a file
+# trained model to a file saving
 joblib.dump(model, 'player_id_prediction_model.pkl')
 
-# Make predictions on the val set
+# predictions on the val set
 predictions = model.predict(X_val)
 
 print(f1_score(y_val,predictions,average='micro'))
@@ -119,6 +121,6 @@ print(f1_score(y_val,predictions,average='micro'))
 scores = cross_val_score(model, features, labels, cv=3)
 print(scores)
 
-# Evaluate the model
+# Evaluation of model
 accuracy = accuracy_score(y_val, predictions)
 print(f"Accuracy: {accuracy}")
