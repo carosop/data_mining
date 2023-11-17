@@ -74,13 +74,16 @@ train_data_new = train_data.iloc[:, :1]
 # Add columns for the count of moves per time interval
 # Add columns for the races
 
+# Specify the target time intervals
+time_intervals = [20, 60, 100, 200]
+
+calc_column = len(time_intervals)* 13 + 13
+
 # New lists of counts
-counts = [[0] * 3052 for _ in range(65)]
+counts = [[0] * 3052 for _ in range(calc_column)]
 # New lists of races
 races = [[0] * 3052 for _ in range(3)]
 
-# Specify the target time intervals
-time_intervals = [20, 60, 100, 200]
 
 # Go through the rows using the functions to count the actions, map the races
 for row_index, row in train_data.iterrows():

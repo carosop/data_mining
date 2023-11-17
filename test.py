@@ -69,13 +69,15 @@ test_data.columns = ['Race'] + [f'Move_{i}' for i in range(1, 3446)]
 # Keep only the first column but all rows
 test_data_new = test_data.iloc[:, :1]
 
+# Specify the target time intervals
+time_intervals = [20, 60, 100, 200]
+
+calc_column = len(time_intervals)* 13 + 13
 # New lists of counts
-counts = [[0] * 340 for _ in range(65)]
+counts = [[0] * 340 for _ in range(calc_column)]
 # New lists of races
 races = [[0] * 340 for _ in range(3)]
 
-# Specify the target time intervals
-time_intervals = [20, 60, 100, 200]
 
 # Go through the rows using the functions to count the actions, map the races
 for row_index, row in test_data.iterrows():
