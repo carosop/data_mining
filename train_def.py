@@ -57,7 +57,6 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
     counts[base_index + 13][row_index] = total_moves
 
 
-
 def mapRaces(races, row_index):
     race = train_data['Race'][row_index]
 
@@ -101,24 +100,6 @@ for row_index, row in train_data.iterrows():
     for ti_index, time_interval in enumerate(time_intervals):
         count_move_per_time(row, counts, row_index, time_interval, ti_index+1)
         
-# Adding all the new columns to the train_data_new
-# Adding new columns for the count of moves
-# for i in range(10):
-#     train_data_new[f'hk{i}Counts'] = counts[i]
-    
-# train_data_new['sCounts'] = counts[10]
-# train_data_new['baseCounts'] = counts[11]
-# train_data_new['singleMineralCounts'] = counts[12]
-
-# # Adding new columns for the count of moves per interval
-# for ti_index, time_interval in enumerate(time_intervals):
-#     base_index = (ti_index+1)*14
-#     for j in range(10):
-#         train_data_new[f'hk{j}_t{time_interval}_Counts'] = counts[base_index + j]
-
-#     train_data_new[f's_t{time_interval}_Counts'] = counts[base_index + 10]
-#     train_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
-#     train_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
 
 for i in range(calc_column):
     locals()[f'count_{i}'] = counts[i]
