@@ -29,35 +29,6 @@ def count_moves(row, counts, index):
     counts[13][index] = total_moves
 
 
-# def count_move_per_time(row, counts, row_index, time_interval, ti_index):
-#     base_index = ti_index*14
-#     total_moves = 0  
-#     for i in range(1, 2564):
-#         move = row["Move "+ str(i)]
-        
-#         if move == f't{time_interval}':
-#             return
-        
-#         else:
-#             # Count actions for the given time interval
-#             if move == 's':
-#                 counts[base_index+10][row_index] += 1
-#             elif move == 'Base':
-#                 counts[base_index+11][row_index] += 1
-#             elif move == 'SingleMineral':
-#                 counts[base_index+12][row_index] += 1
-
-#             # Count hotkeys for the given time interval
-#             elif isinstance(move, str):
-#                 for j in range(10):
-#                     if move.startswith(f"hotkey{j}_t{time_interval}"):
-#                         counts[base_index+j][row_index] += 1
-
-#             total_moves += 1
-
-#     counts[base_index + 13][row_index] = total_moves
-
-
 def count_move_per_time(row, counts, row_index, time_interval, ti_index):
     base_index = ti_index * 14
     total_moves = 0

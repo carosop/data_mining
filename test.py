@@ -55,7 +55,6 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
     counts[base_index + 13][row_index] = total_moves
 
 
-
 def mapRaces(races, row_index):
     race = test_data['Race'][row_index]
 
