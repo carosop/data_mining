@@ -6,9 +6,9 @@ from sklearn.metrics import accuracy_score, f1_score
 import joblib 
 
 def count_moves(row, counts, index):
+    total_moves = 0
     for i in range(1, 2564):
         move = row["Move "+ str(i)]
-
         # count the number of s's
         if move == 's':
             counts[10][index] += 1
@@ -24,10 +24,14 @@ def count_moves(row, counts, index):
                 if move.startswith(f"hotkey{j}"):
                     counts[j][index] += 1
 
+        total_moves += 1  
+    # Save the total moves count
+    counts[13][index] = total_moves
+
 
 def count_move_per_time(row, counts, row_index, time_interval, ti_index):
-    base_index = ti_index*13
-
+    base_index = ti_index*14
+    total_moves = 0  
     for i in range(1, 2564):
         move = row["Move "+ str(i)]
         
@@ -49,6 +53,9 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
                     if move.startswith(f"hotkey{j}_t{time_interval}"):
                         counts[base_index+j][row_index] += 1
 
+            total_moves += 1
+
+    counts[base_index + 13][row_index] = total_moves
 
 def mapRaces(races, row_index):
     race = train_data['Race'][row_index]
@@ -77,7 +84,7 @@ train_data_new = train_data.iloc[:, :1]
 # Specify the target time intervals
 time_intervals = [20, 60, 100, 200]
 
-calc_column = len(time_intervals)* 13 + 13
+calc_column = len(time_intervals)* 14 + 14
 
 # New lists of counts
 counts = [[0] * 3052 for _ in range(calc_column)]
@@ -95,22 +102,45 @@ for row_index, row in train_data.iterrows():
         
 # Adding all the new columns to the train_data_new
 # Adding new columns for the count of moves
-for i in range(10):
-    train_data_new[f'hk{i}Counts'] = counts[i]
+# for i in range(10):
+#     train_data_new[f'hk{i}Counts'] = counts[i]
     
-train_data_new['sCounts'] = counts[10]
-train_data_new['baseCounts'] = counts[11]
-train_data_new['singleMineralCounts'] = counts[12]
+# train_data_new['sCounts'] = counts[10]
+# train_data_new['baseCounts'] = counts[11]
+# train_data_new['singleMineralCounts'] = counts[12]
+
+# # Adding new columns for the count of moves per interval
+# for ti_index, time_interval in enumerate(time_intervals):
+#     base_index = (ti_index+1)*14
+#     for j in range(10):
+#         train_data_new[f'hk{j}_t{time_interval}_Counts'] = counts[base_index + j]
+
+#     train_data_new[f's_t{time_interval}_Counts'] = counts[base_index + 10]
+#     train_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
+#     train_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
+
+for i in range(calc_column):
+    locals()[f'count_{i}'] = counts[i]
+
+for i in range(10):
+    train_data_new[f'hk{i}Frequency'] = [count / counts[13][index] if counts[13][index] != 0 else 0 for index, count in enumerate(counts[i])]
+
+train_data_new['sFrequency'] = [count / counts[13][index] if counts[13][index] != 0 else 0 for index, count in enumerate(counts[10])]
+train_data_new['baseFrequency'] = [count / counts[13][index] if counts[13][index] != 0 else 0 for index, count in enumerate(counts[11])]
+train_data_new['singleMineralFrequency'] = [count / counts[13][index] if counts[13][index] != 0 else 0 for index, count in enumerate(counts[12])]
 
 # Adding new columns for the count of moves per interval
 for ti_index, time_interval in enumerate(time_intervals):
-    base_index = (ti_index+1)*13
+    base_index = (ti_index + 1) * 14
     for j in range(10):
-        train_data_new[f'hk{j}_t{time_interval}_Counts'] = counts[base_index + j]
+        column_name = f'hk{j}_t{time_interval}_Frequency'
+        train_data_new[column_name] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + j])]
 
-    train_data_new[f's_t{time_interval}_Counts'] = counts[base_index + 10]
-    train_data_new[f'base_t{time_interval}_Counts'] = counts[base_index + 11]
-    train_data_new[f'singleMineral_t{time_interval}_Counts'] = counts[base_index + 12]
+    train_data_new[f's_t{time_interval}_Frequency'] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + 10])]
+    train_data_new[f'base_t{time_interval}_Frequency'] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + 11])]
+    train_data_new[f'singleMineral_t{time_interval}_Frequency'] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + 12])]
+
+
 
 # Adding new columns for the races
 train_data_new['race_Protoss'] = races[0]
