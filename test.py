@@ -32,28 +32,28 @@ def count_move_per_time(row, counts, row_index, time_interval, ti_index):
     base_index = ti_index*14
     total_moves = 0
     for i in range(1, 3446):
-        move = row["Move_"+ str(i)]
-        
-        if move == f't{time_interval}':
-            return
-        
-        else:
-            # Count actions for the given time interval
-            if move == 's':
-                counts[base_index+10][row_index] += 1
-            elif move == 'Base':
-                counts[base_index+11][row_index] += 1
-            elif move == 'SingleMineral':
-                counts[base_index+12][row_index] += 1
+        move = row["Move_" + str(i)]
 
-            # Count hotkeys for the given time interval
-            elif isinstance(move, str):
-                for j in range(10):
-                    if move.startswith(f"hotkey{j}_t{time_interval}"):
-                        counts[base_index+j][row_index] += 1
-            total_moves += 1
+        # Count actions for the given time interval
+        if move == 's':
+            counts[base_index + 10][row_index] += 1
+        elif move == 'Base':
+            counts[base_index + 11][row_index] += 1
+        elif move == 'SingleMineral':
+            counts[base_index + 12][row_index] += 1
+        elif isinstance(move, str):
+            for j in range(10):
+                if move.startswith(f"hotkey{j}"):
+                    counts[base_index + j][row_index] += 1
+
+        total_moves += 1
+
+        # Continue counting actions after the specified time interval
+        if move == f't{time_interval}':
+            break
 
     counts[base_index + 13][row_index] = total_moves
+
 
 
 def mapRaces(races, row_index):
@@ -123,6 +123,7 @@ for ti_index, time_interval in enumerate(time_intervals):
 test_data_new['race_Protoss'] = races[0]
 test_data_new['race_Terran'] = races[1]
 test_data_new['race_Zerg'] = races[2]
+
 
 # Saving thhem in a csv file
 test_data_new.to_csv('actiontype_count_test.csv', index=False)
