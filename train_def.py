@@ -146,7 +146,7 @@ predictions = model.predict(X_val)
 
 print(f1_score(y_val,predictions,average='micro'))
 
-scores = cross_val_score(model, features, labels, cv=3)
+scores = cross_val_score(model, features, labels, cv=4)
 print(scores)
 
 # Evaluation of model
