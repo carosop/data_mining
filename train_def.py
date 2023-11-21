@@ -79,12 +79,10 @@ train_data = train_data.drop(['PlayerURL', 'PlayerName'], axis=1)
 # Keep only the first column but all rows
 train_data_new = train_data.iloc[:, :1]
 
-# Add columns for the count of moves per row
-# Add columns for the count of moves per time interval
-# Add columns for the races
 
 # Specify the target time intervals
-time_intervals = [20, 60, 100, 200]
+#time_intervals = [20, 60, 100, 200]
+time_intervals = [10, 20, 60, 100, 200, 270, 340, 550]
 
 calc_column = len(time_intervals)* 14 + 14
 
