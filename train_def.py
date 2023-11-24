@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.utils.class_weight import compute_class_weight
@@ -143,6 +143,7 @@ features = train_data_new.drop(['PlayerID'], axis=1)
 # Split the data into training and testing sets
 X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.2, random_state=42)
 
+
 # Choose a model (e.g., Decision Tree) and train it
 model = RandomForestClassifier(random_state=42, n_estimators=200)
 
@@ -152,16 +153,23 @@ grid_search = GridSearchCV(model, param_grid, cv=4)
 grid_search.fit(X_train, y_train)
 best_model = grid_search.best_estimator_
 
+
+# Choose the boosting algorithm (AdaBoost)
+boosting_model = AdaBoostClassifier(best_model)
+
+boosting_model.fit(X_train, y_train)
+
+
 # Save the best model to a file
-joblib.dump(best_model, 'player_id_prediction_model.pkl')
+joblib.dump(boosting_model, 'player_id_prediction_model.pkl')
 
 # Use the best model for predictions
-predictions = best_model.predict(X_val)
+predictions = boosting_model.predict(X_val)
 
 print(f1_score(y_val, predictions, average='micro'))
 
 # Use the best model for cross-validation scores
-scores = cross_val_score(best_model, features, labels, cv=4)
+scores = cross_val_score(boosting_model, features, labels, cv=4)
 print(scores)
 
 # Evaluation of the model
@@ -169,7 +177,7 @@ accuracy = accuracy_score(y_val, predictions)
 print(f'Accuracy: {accuracy}')
 
 # Explore feature importances
-feature_importances = best_model.feature_importances_
+feature_importances = boosting_model.feature_importances_
 
 
 # # Choose a model (e.g., Decision Tree) and train it
