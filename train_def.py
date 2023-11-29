@@ -149,7 +149,8 @@ model = RandomForestClassifier(random_state=42, n_estimators=200)
 
 # Hyperparameter tuning using GridSearchCV
 param_grid = {'n_estimators': [100, 150, 200], 'max_depth': [None, 10, 20]}
-grid_search = GridSearchCV(model, param_grid, cv=4)
+#grid_search = GridSearchCV(model, param_grid, cv=4)
+grid_search = GridSearchCV(model, param_grid, cv=4, n_jobs=-1)
 grid_search.fit(X_train, y_train)
 best_model = grid_search.best_estimator_
 
