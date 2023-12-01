@@ -11,6 +11,8 @@ import joblib
 import warnings
 
 warnings.simplefilter("ignore")
+# Suppress all FutureWarnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 =======
 import joblib
 import warnings
