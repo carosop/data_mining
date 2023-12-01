@@ -5,7 +5,14 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.utils.class_weight import compute_class_weight
 import numpy as np
-import joblib 
+import joblib
+import warnings
+
+# Suppress all warnings
+warnings.simplefilter("ignore")
+
+# Suppress all FutureWarnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 def count_moves(row, counts, index):
     total_moves = 0
