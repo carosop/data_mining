@@ -4,8 +4,12 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.utils.class_weight import compute_class_weight
+from lightgbm import LGBMClassifier
 import numpy as np
 import joblib 
+import warnings
+
+warnings.simplefilter("ignore")
 
 def count_moves(row, counts, index):
     total_moves = 0
@@ -169,17 +173,18 @@ predictions = boosting_model.predict(X_val)
 
 print(f1_score(y_val, predictions, average='micro'))
 
-# Use the best model for cross-validation scores
-scores = cross_val_score(boosting_model, features, labels, cv=4)
-print(scores)
+# # Use the best model for cross-validation scores
+# scores = cross_val_score(boosting_model, features, labels, cv=4)
+# print(scores)
 
-# Evaluation of the model
-accuracy = accuracy_score(y_val, predictions)
-print(f'Accuracy: {accuracy}')
+# # Evaluation of the model
+# accuracy = accuracy_score(y_val, predictions)
+# print(f'Accuracy: {accuracy}')
 
 # Explore feature importances
 feature_importances = boosting_model.feature_importances_
 
+print("Feature Importances:", feature_importances)
 
 # # Choose a model (e.g., Decision Tree) and train it
 # #model = DecisionTreeClassifier(random_state=42)

@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score
 import joblib 
+import warnings
 
+warnings.simplefilter("ignore")
 
 #same preprocessing as in train_def so that we have save structured data
 def count_moves(row, counts, index):
@@ -78,6 +80,7 @@ test_data_new = test_data.iloc[:, :1]
 # Specify the target time intervals
 #time_intervals = [20, 60, 100, 200]
 time_intervals = [5, 20, 60, 100, 200, 270, 340, 550]
+# time_intervals = [20, 60, 100, 270, 550]
 
 calc_column = len(time_intervals)* 14 + 14
 # New lists of counts
@@ -116,8 +119,6 @@ for ti_index, time_interval in enumerate(time_intervals):
     test_data_new[f's_t{time_interval}_Frequency'] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + 10])]
     test_data_new[f'base_t{time_interval}_Frequency'] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + 11])]
     test_data_new[f'singleMineral_t{time_interval}_Frequency'] = [count / counts[base_index + 13][index] if counts[base_index + 13][index] != 0 else 0 for index, count in enumerate(counts[base_index + 12])]
-
-
 
 # Adding new columns for the races
 test_data_new['race_Protoss'] = races[0]
