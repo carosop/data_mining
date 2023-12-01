@@ -6,10 +6,21 @@ from sklearn.model_selection import train_test_split, cross_val_score, GridSearc
 from sklearn.utils.class_weight import compute_class_weight
 from lightgbm import LGBMClassifier
 import numpy as np
+<<<<<<< HEAD
 import joblib 
 import warnings
 
 warnings.simplefilter("ignore")
+=======
+import joblib
+import warnings
+
+# Suppress all warnings
+warnings.simplefilter("ignore")
+
+# Suppress all FutureWarnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+>>>>>>> 377462aa4ad240c4ed266f93b666592a1e092793
 
 def count_moves(row, counts, index):
     total_moves = 0
