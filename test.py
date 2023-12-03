@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score
 import joblib 
+import warnings
 
+warnings.simplefilter("ignore")
 
 #same preprocessing as in train_def so that we have save structured data
 def count_moves(row, counts, index):
