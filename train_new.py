@@ -328,7 +328,7 @@ best_model = grid_search.best_estimator_
 # rf_model = RandomForestClassifier(random_state=42, n_estimators=200)
 ab_model = AdaBoostClassifier(best_model)
 # ensemble_model = VotingClassifier(estimators=[('rf', best_model), ('ab', ab_model)], voting='hard')
-ensemble_model = StackingClassifier(estimators=[('rf', best_model), ('ab', ab_model)],final_estimator=RandomForestClassifier(),stack_method='auto', cv=5 )
+ensemble_model = StackingClassifier(estimators=[('rf', best_model), ('ab', ab_model)],stack_method='auto', cv=5 )
 ensemble_model.fit(X_train, y_train)
 
 # Save the best model to a file
