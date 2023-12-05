@@ -1,10 +1,8 @@
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from sklearn.utils.class_weight import compute_class_weight
-import numpy as np
 import joblib
 import warnings
 
@@ -152,7 +150,8 @@ X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.
 
 
 # Choose a model (e.g., Decision Tree) and train it
-model = RandomForestClassifier(random_state=42, n_estimators=200)
+# model = RandomForestClassifier(random_state=42, n_estimators=200)
+model = GradientBoostingClassifier(random_state=42, n_estimators=200)
 
 # Hyperparameter tuning using GridSearchCV
 param_grid = {'n_estimators': [100, 150, 200], 'max_depth': [None, 10, 20]}
@@ -183,6 +182,11 @@ print(scores)
 # Evaluation of the model
 accuracy = accuracy_score(y_val, predictions)
 print(f'Accuracy: {accuracy}')
+
+precision = precision_score(y_val, predictions, average='micro')
+recall = recall_score(y_val, predictions, average='micro')
+
+print(f'Precision: {precision}, Recall: {recall}')
 
 # Explore feature importances
 feature_importances = boosting_model.feature_importances_
