@@ -150,8 +150,8 @@ X_train, X_val, y_train, y_val = train_test_split(features, labels, test_size=0.
 
 
 # Choose a model (e.g., Decision Tree) and train it
-# model = RandomForestClassifier(random_state=42, n_estimators=200)
-model = GradientBoostingClassifier(random_state=42, n_estimators=200)
+model = RandomForestClassifier(random_state=42, n_estimators=200)
+#model = GradientBoostingClassifier(random_state=42, n_estimators=200)
 
 # Hyperparameter tuning using GridSearchCV
 param_grid = {'n_estimators': [100, 150, 200], 'max_depth': [None, 10, 20]}
