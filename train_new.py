@@ -279,9 +279,6 @@ recall = recall_score(y_val, predictions, average='micro')
 
 print(f'Precision: {precision}, Recall: {recall}')
 
-# Explore feature importances
-feature_importances = boosting_model.feature_importances_
-
 # Feature Importance
 feature_importances_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': boosting_model.feature_importances_})
 feature_importances_df = feature_importances_df.sort_values(by='Importance', ascending=False)
@@ -294,7 +291,6 @@ plt.yticks(fontsize=5)
 plt.xlabel("Importance", fontsize=9)
 plt.ylabel("Feature", fontsize=9)
 plt.show()
-
 
 # Displaying the top correlated features
 top_features = feature_importances_df.nlargest(15, 'Importance')['Feature']
@@ -316,9 +312,6 @@ plt.yticks(fontsize=5)
 plt.xlabel("PlayerID", fontsize=12)
 plt.ylabel("Count", fontsize=12)
 plt.show()
-
-
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Confusion Matrix (after model prediction)
 top_classes_cm = y_train.value_counts().nlargest(50)

@@ -128,7 +128,7 @@ test_data_new['race_Zerg'] = races[2]
 
 
 # Saving thhem in a csv file
-test_data_new.to_csv('actiontype_count_test.csv', index=False)
+#test_data_new.to_csv('actiontype_count_test.csv', index=False)
 
 # print(test_data_new)
 
