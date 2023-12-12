@@ -1,8 +1,10 @@
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, confusion_matrix
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+import matplotlib.pyplot as plt
+import seaborn as sns
 import joblib
 import warnings
 
@@ -212,3 +214,48 @@ feature_importances = boosting_model.feature_importances_
 # # Evaluation of model
 # accuracy = accuracy_score(y_val, predictions)
 # print(f'Accuracy: {accuracy}')
+
+
+
+
+# VISUALISATION
+
+# Correlation Matrix
+correlation_matrix = pd.DataFrame(X_train).corr()
+plt.figure(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", fmt=".2f")
+plt.subplots_adjust(bottom=0.2)
+plt.title("Correlation Heatmap", fontsize=14)
+plt.xticks(fontsize=8)
+plt.yticks(fontsize=8)
+plt.show()
+
+# Target Classes Distribution
+plt.figure(figsize=(8, 6))
+y_train.value_counts().plot(kind='bar', color="#98BF64")
+plt.title("Distribution of Target Classes", fontsize=14)
+plt.xticks(fontsize=5)
+plt.yticks(fontsize=5)
+plt.xlabel("PlayerID", fontsize=9)
+plt.ylabel("Count", fontsize=9)
+plt.show()
+
+# Confusion Matrix (after model prediction)
+conf_matrix = confusion_matrix(y_val, predictions)
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, cmap="Greens", fmt="d", cbar=False)
+plt.title("Confusion Matrix", fontsize=14)
+plt.xlabel("Predicted Label", fontsize=9)
+plt.ylabel("True Label", fontsize=9)
+plt.show()
+
+# Feature Importance
+feature_importances_df = pd.DataFrame({'Feature': X_train.columns, 'Importance': best_model.feature_importances_})
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Importance', y='Feature', data=feature_importances_df, palette="crest")
+plt.title("Feature Importance", fontsize=14)
+plt.xticks(fontsize=5)
+plt.yticks(fontsize=5)
+plt.xlabel("Importance", fontsize=9)
+plt.ylabel("Feature", fontsize=9)
+plt.show()
