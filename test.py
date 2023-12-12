@@ -161,7 +161,7 @@ player_info = player.drop_duplicates(subset='PlayerID', keep='first')
 print(player_info)
 
 # Save the result to CSV
-player_info.to_csv('player_info.csv', index=False)
+# player_info.to_csv('player_info.csv', index=False)
 
 
 # Additional statistics if needed
