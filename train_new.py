@@ -256,17 +256,29 @@ print(final_features)
 #     print(f"{eliminated}")
 #     print(f"Features Eliminated {percentage * 100}%")
 
-# Choose the boosting algorithm (AdaBoost)
-boosting_model = AdaBoostClassifier(model)
 
-boosting_model.fit(X_train, y_train)
+
+# Apply feature selection to training and validation sets
+X_train_selected = X_train.iloc[:, best_feature_subset]
+X_val_selected = X_val.iloc[:, best_feature_subset]
+
+# Train AdaBoost model with RandomForest as the base estimator
+boosting_model = AdaBoostClassifier(base_estimator=model)
+boosting_model.fit(X_train_selected, y_train)
+
+# # Choose the boosting algorithm (AdaBoost)
+# boosting_model = AdaBoostClassifier(model)
+
+# boosting_model.fit(X_train, y_train)
 
 
 # Save the best model to a file
 joblib.dump(boosting_model, 'player_id_prediction_model.pkl')
 
 # Use the best model for predictions
-predictions = boosting_model.predict(X_val)
+# predictions = boosting_model.predict(X_val)
+predictions = boosting_model.predict(X_val_selected)
+
 
 print(f1_score(y_val, predictions, average='micro'))
 
