@@ -14,7 +14,7 @@ We try to explain what we have done step by step through this 3 Jupyter Notebook
 
 - [Different techniques of Model Training, Testing and Data Visualisation](StarCraft_Player_Prediction.ipynb)
 - [Feature Importance Analysis](Feature_Importance.ipynb)
-- [Feature Reduction with best prediction accuracy](train_jupyter.ipynb)
+- [Feature Reduction with best prediction accuracy](feature_reduction.ipynb)
 
 
 
